@@ -11,16 +11,18 @@ def main():
 
 
 # returns the url of image of the day
-def get_img_url(description=False):
+def get_img_url(description=False, day=1):
     # the bing URL
     bing = "https://www.bing.com"
     # URL of the JSON info of the Bing Picture of the day
-    url = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US"
+    url = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n={}&mkt=en-US".format(
+        day
+    )
     json = requests.get(url).json()
     # gets image description
-    img_desc = json["images"][0]["copyright"]
+    img_desc = json["images"][day - 1]["copyright"]
     # get the image URL from the JSON file
-    img_url = bing + json["images"][0]["url"]
+    img_url = bing + json["images"][day - 1]["url"]
 
     if description:
         return img_url, img_desc

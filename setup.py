@@ -9,7 +9,7 @@ setup(
     url="https://git.pe42.ir/MRV/python-bing-background",
     author="Mohammadreza Varasteh",
     author_email="varastehmr@gmail.com",
-    license="MIT",
+    license="unlicense",
     packages=["backgroundify"],
     zip_safe=False,
 )
