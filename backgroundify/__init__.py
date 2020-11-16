@@ -6,7 +6,7 @@ from pathlib import Path
 
 def main():
     url = get_img_url()
-    path = save_file(url)
+    path = save_file(url, str(Path.home()) + "/Pictures/PythonBingWallpaper/")
     change_background(path)
 
 
@@ -23,25 +23,26 @@ def get_img_url(description=False, day=1):
     img_desc = json["images"][day - 1]["copyright"]
     # get the image URL from the JSON file
     img_url = bing + json["images"][day - 1]["url"]
-
     if description:
         return img_url, img_desc
     else:
         return img_url
 
 
+# Changes the file name to YY-MM-DD.jpg and returns the name
+def get_filename():
+    return str(datetime.date.today()) + ".jpg"
+
+
 # saves the image and returns the path of saved image
-def save_file(url):
-    # create the path string
-    filename = str(datetime.date.today()) + ".jpg"
-    save_path = str(Path.home()) + "/Pictures/PythonBingWallpaper/"
+def save_file(url, path, filename):
     # concatnating them for simplicity
-    path = save_path + filename
+    path = path + filename
     # download the image and converting it to bytes
     image = requests.get(url).content
     # creates a dir for storing images and passes if the dir already exists
     try:
-        os.mkdir(save_path)
+        os.mkdir(path)
     except FileExistsError as f:
         pass
     # creates a file in binary mode and writes image bytes to file
