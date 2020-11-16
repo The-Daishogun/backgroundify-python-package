@@ -1,6 +1,6 @@
 import requests
 import os
-import datetime
+from datetime import date, timedelta
 from pathlib import Path
 
 
@@ -30,8 +30,8 @@ def get_img_url(description=False, day=1):
 
 
 # Changes the file name to YY-MM-DD.jpg and returns the name
-def get_filename():
-    return str(datetime.date.today()) + ".jpg"
+def get_filename(days=0):
+    return str(date.today() - timedelta(days=days)) + ".jpg"
 
 
 # saves the image and returns the path of saved image
@@ -63,4 +63,3 @@ def change_background(filepath):
 
 if __name__ == "__main__":
     main()
-
