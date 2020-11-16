@@ -42,7 +42,7 @@ def save_file(url, path, filename):
     image = requests.get(url).content
     # creates a dir for storing images and passes if the dir already exists
     try:
-        os.mkdir(path)
+        os.mkdir("pic")
     except FileExistsError as f:
         pass
     # creates a file in binary mode and writes image bytes to file
