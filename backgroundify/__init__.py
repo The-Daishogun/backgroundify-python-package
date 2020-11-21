@@ -49,5 +49,12 @@ class Backgroundify(object):
             f = open(path, "wb")
             f.write(image)
             f.close()
-        print("Done!")
+
+    def change_wallpaper(self):
+        filepath = os.path.join(os.getcwd(), "static/pic/", self.imgs[0]["filename"])
+        os.system(
+            "gsettings set org.gnome.desktop.background picture-uri file:////{}".format(
+                filepath
+            )
+        )
 
