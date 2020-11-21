@@ -1,66 +1,53 @@
 import requests
 import os
 from datetime import date, timedelta
-from pathlib import Path
 
 
-def main():
-    url = get_img_url()
-    path = save_file(url, str(Path.home()) + "/Pictures/PythonBingWallpaper/")
-    change_background(path)
+class Backgroundify(object):
+    def __init__(self, days=1):
+        """a class that help you get the Bing image of the day
 
-
-# returns the url of image of the day
-def get_img_url(description=False, day=1):
-    # the bing URL
-    bing = "https://www.bing.com"
-    # URL of the JSON info of the Bing Picture of the day
-    url = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n={}&mkt=en-US".format(
-        day
-    )
-    json = requests.get(url).json()
-    # gets image description
-    img_desc = json["images"][day - 1]["copyright"]
-    # get the image URL from the JSON file
-    img_url = bing + json["images"][day - 1]["url"]
-    if description:
-        return img_url, img_desc
-    else:
-        return img_url
-
-
-# Changes the file name to YY-MM-DD.jpg and returns the name
-def get_filename(days=0):
-    return str(date.today() - timedelta(days=days)) + ".jpg"
-
-
-# saves the image and returns the path of saved image
-def save_file(url, path, filename):
-    # concatnating them for simplicity
-    path = path + filename
-    # download the image and converting it to bytes
-    image = requests.get(url).content
-    # creates a dir for storing images and passes if the dir already exists
-    try:
-        os.mkdir("static")
-        os.mkdir("static/pic")
-    except FileExistsError as f:
-        pass
-    # creates a file in binary mode and writes image bytes to file
-    f = open(path, "wb")
-    f.write(image)
-    f.close()
-    return path
-
-
-# changes the system background
-def change_background(filepath):
-    os.system(
-        "gsettings set org.gnome.desktop.background picture-uri file:////{}".format(
-            filepath
+        Args:
+            days (int, optional): Shows how many days you want to go back. Defaults to 1. Max = 8
+        """
+        self.days = days if days <= 8 else 8
+        self.bing = "https://www.bing.com"
+        self.reqURL = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n={}&mkt=en-US".format(
+            self.days
         )
-    )
+        self.imgs = []
 
+    def get_imgs(self):
+        """returns an array. each entry is an object containing title, copyright info, url, and filename of a bing picture
 
-if __name__ == "__main__":
-    main()
+        Returns:
+            list: each entry is an object containing title, copyright info, url, and filename of a bing picture
+        """
+        response = requests.get(self.reqURL).json()
+        for i, img in enumerate(response["images"]):
+            file_name = str(date.today() - timedelta(days=i)) + ".jpg"
+            img_obj = {
+                "title": img["title"],
+                "copyright": img["copyright"],
+                "url": self.bing + img["url"],
+                "filename": file_name,
+            }
+            self.imgs.append(img_obj)
+        return self.imgs
+
+    def save_files(self):
+        """saves the files to /static/pic/ folder. 
+        """
+        try:
+            os.mkdir("static")
+            os.mkdir("static/pic")
+        except FileExistsError as f:
+            pass
+        for img in self.imgs:
+            path = "static/pic/" + img["filename"]
+            image = requests.get(img["url"]).content
+            f = open(path, "wb")
+            f.write(image)
+            f.close()
+        print("Done!")
+
