@@ -15,24 +15,23 @@ class Backgroundify(object):
         self.reqURL = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n={}&mkt=en-US".format(
             self.days
         )
-        self.imgs = []
+        self.imgs = {}
 
     def get_imgs(self):
-        """returns an array. each entry is an object containing title, copyright info, url, and filename of a bing picture
+        """returns an object. each entry is an object containing title, copyright info, url, and filename of a bing picture
 
         Returns:
-            list: each entry is an object containing title, copyright info, url, and filename of a bing picture
+            Object: each entry is an object containing title, copyright info, url, and filename of a bing picture
         """
         response = requests.get(self.reqURL).json()
         for i, img in enumerate(response["images"]):
             file_name = str(date.today() - timedelta(days=i)) + ".jpg"
-            img_obj = {
+            self.imgs[i] = {
                 "title": img["title"],
                 "copyright": img["copyright"],
                 "url": self.bing + img["url"],
                 "filename": file_name,
             }
-            self.imgs.append(img_obj)
         return self.imgs
 
     def save_files(self):
@@ -43,9 +42,9 @@ class Backgroundify(object):
             os.mkdir("static/pic")
         except FileExistsError as f:
             pass
-        for img in self.imgs:
-            path = "static/pic/" + img["filename"]
-            image = requests.get(img["url"]).content
+        for i in self.imgs:
+            path = "static/pic/" + self.imgs[i]["filename"]
+            image = requests.get(self.imgs[i]["url"]).content
             f = open(path, "wb")
             f.write(image)
             f.close()
