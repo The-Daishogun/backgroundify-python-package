@@ -44,10 +44,13 @@ class Backgroundify(object):
             pass
         for i in self.imgs:
             path = "static/pic/" + self.imgs[i]["filename"]
-            image = requests.get(self.imgs[i]["url"]).content
-            f = open(path, "wb")
-            f.write(image)
-            f.close()
+            if os.path.exists(path):
+                pass
+            else:
+                image = requests.get(self.imgs[i]["url"]).content
+                f = open(path, "wb")
+                f.write(image)
+                f.close()
 
     def change_wallpaper(self):
         filepath = os.path.join(os.getcwd(), "static/pic/", self.imgs[0]["filename"])
@@ -56,4 +59,3 @@ class Backgroundify(object):
                 filepath
             )
         )
-
