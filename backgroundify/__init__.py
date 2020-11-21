@@ -25,12 +25,13 @@ class Backgroundify(object):
         """
         response = requests.get(self.reqURL).json()
         for i, img in enumerate(response["images"]):
-            file_name = str(date.today() - timedelta(days=i)) + ".jpg"
+            file_name = str(date.today() - timedelta(days=i))
             self.imgs[i] = {
                 "title": img["title"],
                 "copyright": img["copyright"],
                 "url": self.bing + img["url"],
                 "filename": file_name,
+                "ext": ".jpg",
             }
         return self.imgs
 
