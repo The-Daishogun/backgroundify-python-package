@@ -44,7 +44,7 @@ class Backgroundify(object):
         except FileExistsError as f:
             pass
         for i in self.imgs:
-            path = "static/pic/" + self.imgs[i]["filename"]
+            path = "static/pic/" + self.imgs[i]["filename"] + self.imgs[i]["ext"]
             if os.path.exists(path):
                 pass
             else:
